@@ -53,24 +53,24 @@ app.post('/auth', function (request, response) {
                 request.session.username = username;
                 response.redirect('/home');
             } else {
-                response.send('Incorrect Username and/or Password!');
+                response.render('error');
             }
             response.end();
         });
     } else {
-        response.send('Please enter Username and Password!');
+        response.render('error');
         response.end();
     }
 });
 app.get('/home', function (request, response) {
     if (request.session.loggedin) {
-        connection_root.query('SELECT * FROM ProjectAssistant.QualificationsDetails;', function (error, results, fields) {
+        connection_root.query('SELECT * FROM ProjectAssistant.QualificationsDetails group by AppliedField order by CompletedYear ;', function (error, results, fields) {
             // connected!
             console.log(results);
             response.render('index', { table_object_qualification: results });
         });
     } else {
-        response.send('Please login to view this page!');
+        response.render('sessipn-expire');
     }
 
 });
@@ -110,6 +110,10 @@ app.get('/candidiate-profile', function (request, response) {
     else {
         response.redirect('/')
     }
+});
+app.get('/candidiate-profile', function (request, response) {
+    request.session.loggedin = false;
+    response.render('error');
 });
 
 app.listen(3005);
