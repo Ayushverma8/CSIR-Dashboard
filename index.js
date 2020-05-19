@@ -70,7 +70,7 @@ app.get('/home', function (request, response) {
             response.render('index', { table_object_qualification: results });
         });
     } else {
-        response.render('sessipn-expire');
+        response.render('session-expire');
     }
 
 });
