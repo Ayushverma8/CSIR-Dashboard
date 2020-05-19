@@ -88,7 +88,7 @@ app.get('/candidiate-profile', function (request, response) {
             sql_2 = mysql.format(SQL_PROJECT, inserts_email);
 
 
-            connection_root.query("SELECT * FROM ProjectAssistant.BasicUserDetails where Email = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.ProjectDetails where Email  = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.GeneralInformationUser WHERE EmailID = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.QualificationsDetails where Email = ? order by id;SELECT * FROM ProjectAssistant.WorkExpereince where Email = ?;SELECT * FROM ProjectAssistant.UserAceivementsAndScore WHERE Email = ?;", [user_email_address, user_email_address, user_email_address, user_email_address, user_email_address, user_email_address], function (error, results, fields) {
+            connection_root.query("SELECT * FROM ProjectAssistant.BasicUserDetails where Email = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.ProjectDetails where Email  = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.GeneralInformationUser WHERE EmailID = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.QualificationsDetails where Email = ? group by Degree;SELECT * FROM ProjectAssistant.WorkExpereince where Email = ?;SELECT * FROM ProjectAssistant.UserAceivementsAndScore WHERE Email = ?;", [user_email_address, user_email_address, user_email_address, user_email_address, user_email_address, user_email_address], function (error, results, fields) {
                 // connect[0][0]
                 for (let i = 0; i < results[4].length; i++) {
                     var date = moment(results[4][i].FromDate);
