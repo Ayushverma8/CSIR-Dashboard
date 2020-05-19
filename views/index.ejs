@@ -190,30 +190,32 @@
             <table class="table table-hover dataTable table-striped w-full" id="exampleTableSearch">
               <thead>
                 <tr>
+                  <th>Position</th>
                     <th>Degree</th>
                     <th>Specilization</th>
                     <th>Institute</th>
-                    <th>University</th>
+                    <!-- <th>University</th> -->
                     <th>Finished</th>
                     <th>Score</th>
-                    <th>Phone</th>
+                   
                     <th>Email</th>
-                    <th>Position</th>
+                   
 
 
                 </tr>
               </thead>
               <tfoot>
                 <tr>
+                  <th>Position</th>
                   <th>Degree</th>
                   <th>Specilization</th>
                   <th>Institute</th>
-                  <th>University</th>
+                  <!-- <th>University</th> -->
                   <th>Finished</th>
                   <th>Score</th>
-                  <th>Phone</th>
+                
                   <th>Email</th>
-                  <th>Position</th>
+                 
 
 
                 </tr>
@@ -221,15 +223,15 @@
               <tbody>
                 <% for (var i = 0; i < table_object_qualification.length; i++) { %>
                 <tr>
+                  <td><b><%= table_object_qualification[i].AppliedField %></b></td>
                   <td><%= table_object_qualification[i].Degree %></td>
                   <td><%= table_object_qualification[i].Specialization %></td>
                   <td><%= table_object_qualification[i].Institute %></td>
-                  <td><%= table_object_qualification[i].University %></td>
+                  <!-- <td><%= table_object_qualification[i].University %></td> -->
                   <td><%= table_object_qualification[i].CompletedYear %></td>
                   <td><%= table_object_qualification[i].PercentageCGPA %></td>
-                  <td><%= table_object_qualification[i].PhoneNumber %></td>
+                
                   <td><%= table_object_qualification[i].Email %></td>
-                  <td><%= table_object_qualification[i].AppliedField %></td>
 
 
                 </tr>
