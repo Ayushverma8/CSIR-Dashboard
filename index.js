@@ -3,7 +3,8 @@ var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
-
+var moment = require('moment'); // require
+moment().format(); 
 var connection = mysql.createConnection({
     connectionLimit: 14,
     host: 'sarva-yoactiv-dailydump.ceb2y0xssrns.ap-south-1.rds.amazonaws.com',
@@ -28,7 +29,7 @@ app.use(session({
     secret: 'secret',
     resave: true,
     saveUninitialized: true,
-    secure: false, maxAge: null 
+    secure: false, maxAge: null
 }));
 var sess;
 
@@ -71,19 +72,29 @@ app.get('/home', function (request, response) {
     } else {
         response.send('Please login to view this page!');
     }
-    
+
 });
 
-app.post('/candidiate-profile', function (request, response) {
-    if (request.session.loggedin) {
-        connection_root.query('SELECT * FROM ProjectAssistant.BasicUserDetails where PhoneNumber = ?;SELECT * FROM ProjectAssistant.ProjectDetails where PhoneNumber = ?;SELECT * FROM ProjectAssistant.QualificationsDetails where PhoneNumber = ?;',['9176033298','9176033298','9176033298'], function (error, results, fields) {
-            // connected!
-            console.log(results);
-            response.render('index', { table_object_qualification: results });
+app.get('/candidiate-profile', function (request, response) {
+    let user_email_address = request.query.email; // $_GET["id"]
+    console.log("Hello " + user_email_address);
+    let SQL_BASIC_DETAILS = "SELECT * FROM ProjectAssistant.BasicUserDetails where Email = ? ORDER BY id DESC LIMIT 1";
+    let SQL_PROJECT = "SELECT * FROM ProjectAssistant.ProjectDetails where Email  = ? ORDER BY id DESC LIMIT 1;";
+
+    var inserts_email = [user_email_address];
+    sql_1 = mysql.format(SQL_BASIC_DETAILS, inserts_email);
+    sql_2 = mysql.format(SQL_PROJECT, inserts_email);
+
+    if (request.session) {
+        connection_root.query("SELECT * FROM ProjectAssistant.BasicUserDetails where Email = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.ProjectDetails where Email  = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.GeneralInformationUser WHERE EmailID = ? ORDER BY id DESC LIMIT 1;",[user_email_address,user_email_address,user_email_address], function (error, results, fields) {
+            // connect[0][0]
+            let values = { Name: results[0][0].Name , FAName : results[0][0].FathersName, Gender: results[0][0].Gender , Category : results[0][0].UserCategory , Nationality : results[0][0].Nationality , DOB : moment(results[0][0].DOB).format('DD/MM/YYYY') , Email : results[0][0].Email , PhoneNumber : results[0][0].PhoneNumber , Address : results[0][0].Address , SkypeID : results[0][0].SkypeID , ZoomID : results[0][0].ZoomID , WhatsAppNumber : results[0][0].WhatsAppNumber , PWDStatus : results[0][0].PWDStatus , DisabilityPercentage : results[0][0].DisabilityPercentage , Timestamp : results[0][0].Timestamp , ApplicationNumber : results[0][0].Application_Number, Title : results[1][0].Title , Organisation: results[1][0].Organisation ,Duration : results[1][0].Duration , Desc : results[1][0].Description,CloseRelative:results[2][0].CloseRelatives , BondContact: results[2][0].BondContarctual , Dismissed : results[2][0].dismissedEver , OtherInfo : results[2][0].OtherInformation   };
+            response.render('user-profile',values );
+            console.log(results[2][2]);
+
         });
-    } else {
-        response.send('Please login to view this page!');
     }
-    
+
 });
+
 app.listen(3005);
