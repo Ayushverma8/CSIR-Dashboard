@@ -26,10 +26,10 @@ var connection_root = mysql.createConnection({
 
 var app = express();
 app.use(session({
-    secret: 'secret',
+    secret: 'super secret key',
     resave: true,
+    cookie: { maxAge: 8*60*60*1000 },  // 8 hours
     saveUninitialized: true,
-    secure: false, maxAge: null
 }));
 var sess;
 
@@ -76,6 +76,7 @@ app.get('/home', function (request, response) {
 });
 
 app.get('/candidiate-profile', function (request, response) {
+    if(request.query.email){
     let user_email_address = request.query.email; // $_GET["id"]
     console.log("Hello " + user_email_address);
     let SQL_BASIC_DETAILS = "SELECT * FROM ProjectAssistant.BasicUserDetails where Email = ? ORDER BY id DESC LIMIT 1";
@@ -85,8 +86,8 @@ app.get('/candidiate-profile', function (request, response) {
     sql_1 = mysql.format(SQL_BASIC_DETAILS, inserts_email);
     sql_2 = mysql.format(SQL_PROJECT, inserts_email);
 
-    if (request.session) {
-        connection_root.query("SELECT * FROM ProjectAssistant.BasicUserDetails where Email = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.ProjectDetails where Email  = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.GeneralInformationUser WHERE EmailID = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.QualificationsDetails where Email = ? order by id;SELECT * FROM ProjectAssistant.WorkExpereince where Email = ?;",[user_email_address,user_email_address,user_email_address,user_email_address,user_email_address], function (error, results, fields) {
+    if (request.session.loggedin) {
+        connection_root.query("SELECT * FROM ProjectAssistant.BasicUserDetails where Email = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.ProjectDetails where Email  = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.GeneralInformationUser WHERE EmailID = ? ORDER BY id DESC LIMIT 1;SELECT * FROM ProjectAssistant.QualificationsDetails where Email = ? order by id;SELECT * FROM ProjectAssistant.WorkExpereince where Email = ?;SELECT * FROM ProjectAssistant.UserAceivementsAndScore WHERE Email = ?;",[user_email_address,user_email_address,user_email_address,user_email_address,user_email_address,user_email_address], function (error, results, fields) {
             // connect[0][0]
             for(let i =0; i < results[4].length ; i ++){
            var date = moment(results[4][i].FromDate);
@@ -95,13 +96,16 @@ app.get('/candidiate-profile', function (request, response) {
            results[4][i].ToDate = dateComponent
            console.log(results[4][i].FromDate);
             }
-            let values = { Name: results[0][0].Name , FAName : results[0][0].FathersName, Gender: results[0][0].Gender , Category : results[0][0].UserCategory , Nationality : results[0][0].Nationality , DOB : moment(results[0][0].DOB).format('DD/MM/YYYY') , Email : results[0][0].Email , PhoneNumber : results[0][0].PhoneNumber , Address : results[0][0].Address , SkypeID : results[0][0].SkypeID , ZoomID : results[0][0].ZoomID , WhatsAppNumber : results[0][0].WhatsAppNumber , PWDStatus : results[0][0].PWDStatus , DisabilityPercentage : results[0][0].DisabilityPercentage , Timestamp : results[0][0].Timestamp , ApplicationNumber : results[0][0].Application_Number, Title : results[1][0].Title , Organisation: results[1][0].Organisation ,Duration : results[1][0].Duration , Desc : results[1][0].Description,CloseRelative:results[2][0].CloseRelatives , BondContact: results[2][0].BondContarctual , Dismissed : results[2][0].dismissedEver , OtherInfo : results[2][0].OtherInformation, Qualification:results[3] , EmploymentHistory : results[4] };
+            let values = { Name: results[0][0].Name , FAName : results[0][0].FathersName, Gender: results[0][0].Gender , Category : results[0][0].UserCategory , Nationality : results[0][0].Nationality , DOB : moment(results[0][0].DOB).format('DD/MM/YYYY') , Email : results[0][0].Email , PhoneNumber : results[0][0].PhoneNumber , Address : results[0][0].Address , SkypeID : results[0][0].SkypeID , ZoomID : results[0][0].ZoomID , WhatsAppNumber : results[0][0].WhatsAppNumber , PWDStatus : results[0][0].PWDStatus , DisabilityPercentage : results[0][0].DisabilityPercentage , Timestamp : results[0][0].Timestamp , ApplicationNumber : results[0][0].Application_Number, Title : results[1][0].Title , Organisation: results[1][0].Organisation ,Duration : results[1][0].Duration , Desc : results[1][0].Description,CloseRelative:results[2][0].CloseRelatives , BondContact: results[2][0].BondContarctual , Dismissed : results[2][0].dismissedEver , OtherInfo : results[2][0].OtherInformation, Qualification:results[3] , EmploymentHistory : results[4], ExamsAndExtras : results[5], Timestamp : moment(results[0][0].Timestamp).format("MMMM Do YYYY") };
             response.render('user-profile',values );
-            // console.log(results[2][2]);
+            console.log(results[5]);
 
         });
     }
-
+    }
+    else {
+        response.redirect('/')
+    }
 });
 
 app.listen(3005);
