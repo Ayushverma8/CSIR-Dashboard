@@ -630,7 +630,7 @@
                 <div class="panel-body">
                     <!-- Example Responsive -->
                     <div class="example-wrap">
-                        <h4 class="example-title">Qualifications</h4>
+                        <h4 class="example-title">Qualifications for <%= Name %> </h4>
                         
                         <div class="example">
                             <div class="table-responsive">
@@ -646,18 +646,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% for (var i = 0; i < qualifications.length; i++) { %>
+                                        <% for (var i = 0; i < Qualification.length; i++) { %>
                                         <tr>
-                                            <td></td>
-                                            <td>Herman Beck</td>
-                                            <td>
-                                                
-                                            </td>
-                                            <td></td>
-                                            <td>
-                                                
-                                            </td>
-                                            <td></td>
+                                            <td><%= Qualification[i].Degree %></td>
+                                            <td><%= Qualification[i].Specialization %></td>
+                                            <td><%= Qualification[i].Institute %></td>
+                                            <td><%= Qualification[i].University %></td>
+                                            <td><%= Qualification[i].CompletedYear %></td>
+                                            <td><%= Qualification[i].PercentageCGPA %></td>
+
                                         </tr>
                                         <% } %>
 
