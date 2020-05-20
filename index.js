@@ -64,7 +64,7 @@ app.post('/auth', function (request, response) {
 });
 app.get('/home', function (request, response) {
     if (request.session.loggedin) {
-        connection_root.query('SELECT * FROM ProjectAssistant.QualificationsDetails group by AppliedField order by CompletedYear ;', function (error, results, fields) {
+        connection_root.query('SELECT * FROM ProjectAssistant.QualificationsDetails order by CompletedYear ;', function (error, results, fields) {
             // connected!
             console.log(results);
             response.render('index', { table_object_qualification: results });
